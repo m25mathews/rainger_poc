@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cim-poc
+  namespace: xrxe054
+spec:
+  serviceAccountName: default-editor
+  containers:
+    - name: cim-poc
+      tty: true
+      stdin: true
+      image: 709741256416.dkr.ecr.us-east-2.amazonaws.com/aad-cim-poc:latest
+      command: [ "/bin/bash" ]
+      resources:
+        requests:
+          memory: 8Gi
+          cpu: 4
+        limits:
+          memory: 8Gi
+          cpu: 4
+      envFrom:
+        - secretRef:
+            name: gpass
+      volumeMounts:
+        - mountPath: /cim-poc/efs-data/
+          name: xrxe054-individual-storage
+          subPath: cim-poc/data/
+
+  volumes:
+    - name: xrxe054-individual-storage
+      persistentVolumeClaim:
+        claimName: xrxe054-individual-storage
